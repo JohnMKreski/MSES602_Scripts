@@ -2,9 +2,10 @@
 
 # monitor_wifi.py
 import subprocess
+import sys
 from time import sleep
 
-SLEEP_TIME = 1 * 60
+SLEEP_TIME = 1 * 30  # seconds
 
 # Choose what to ping by setting TARGET_KEY.
 # Examples:
@@ -13,7 +14,6 @@ SLEEP_TIME = 1 * 60
 TARGETS = {
     "internet": "8.8.8.8",
     "google": "www.google.com",
-    "gateway": "192.168.1.1",
 }
 TARGET_KEY = "internet"
 
@@ -43,7 +43,10 @@ def ping_host(host: str, count: int = PING_COUNT, timeout_seconds: int = PING_TI
 def is_internet_on():
     """Check connectivity by pinging the configured target."""
 
-    host = TARGETS.get(TARGET_KEY)
+    if len(sys.argv) > 1:
+        host = sys.argv[1]
+    else:
+        host = TARGETS.get(TARGET_KEY)
     if not host:
         print(f"# unknown TARGET_KEY: {TARGET_KEY!r}. Valid keys: {', '.join(TARGETS.keys())}")
         return False
@@ -68,6 +71,10 @@ def main():
         print ('# sleeping for ' +  str(SLEEP_TIME) + ' seconds...')
         sleep(SLEEP_TIME)
 
+if len(sys.argv) > 1:
+    print(f"Overriding target host with command-line argument: {sys.argv[1]}")
+else:
+    print(f"Using target host for key '{TARGET_KEY}': {TARGETS.get(TARGET_KEY)}")
 
 #############################################################################
 
