@@ -4,7 +4,7 @@
 
 This lab focused on using Python as a scripting language for common operational and system-administration tasks. Rather than strictly following the original lab scripts, the goal was to understand what each script was doing, why it was written that way, and how it could be improved to better reflect modern Linux systems and real-world DevOps practices.
 
-All work was performed on a headless Ubuntu Server accessed via SSH. The scripts were cloned from a course-provided repository and then incrementally modified for correctness, clarity, and usability. The emphasis throughout the lab was experimentation and learning rather than rote execution of steps.
+All work was performed on a headless [Ubuntu Server](../system.md) accessed via SSH. The scripts were cloned from a course-provided repository and then incrementally modified for correctness, clarity, and usability. The emphasis throughout the lab was experimentation and learning rather than rote execution of steps.
 
 Screenshots referenced in this document are included where appropriate to demonstrate script output and behavior.
 

@@ -1,119 +1,108 @@
-# MSES602 – Python Scripting (DevOps Lab)
+# MSES602 – DevOps Lab Assignments
 
-This repository contains small, beginner-friendly Python scripts, modified
-as part of the [MSES602 DevOps labs](https://github.com/RegisUniversity/MSES602_DevOpsUtils.git).
+This repository contains my **lab assignments for MSES602 (DevOps)** at Regis University. It serves as a consolidated workspace for hands-on exercises focused on **automation, system inspection, and infrastructure tooling**, rather than a single-purpose project.
 
-# Labs:
- - [Lab 1](./labs/lab1.md)
+Course materials and reference utilities provided by Regis University can be found here:
 
- ---
+* [https://github.com/RegisUniversity/MSES602_DevOpsUtils.git](https://github.com/RegisUniversity/MSES602_DevOpsUtils.git)
+* [https://github.com/RegisUniversity/MSES602_ansible.git](https://github.com/RegisUniversity/MSES602_ansible.git)
 
-The focus of this repo is on learning and experimentation rather than rigid step-following:
+---
 
-* Understanding how Python can be used for operational and system tasks
-* Reading, modifying, and reasoning about scripts instead of treating them as black boxes
-* Applying safe, non-destructive checks to inspect system state
-* Gradually adopting best practices at a learner’s pace
+## Repository Purpose
 
-These scripts are intentionally simple and meant to evolve as understanding improves.
+The goal of this repository is to:
 
-## What’s in this repo?
+* Maintain one organized location for all MSES602 lab work
+* Track incremental learning across multiple DevOps-related topics
+* Capture both working artifacts (scripts, playbooks) and written reflections
 
-* `envChk.py` – Displays basic system information such as uptime, CPU usage, and hardware metrics (where available)
-* `netmon.py` – Periodically checks connectivity using `ping` (LAN or Internet depending on target)
-* `passChk.py` – Audits local Linux user accounts using `/etc/passwd` and `/etc/shadow`
+Labs are organized by number and evolve as concepts build throughout the course.
+
+---
+
+## Lab Structure
+
+```text
+labs/
+├── lab01/        # Python scripting and system inspection
+├── lab02/        # Ansible + Jenkins automation
+└── labXX/        # Future labs
+```
+
+Each lab directory typically contains:
+
+* A `.md` with the lab write-up and reflection
+* Supporting assets (screenshots, diagrams)
+* Lab-specific code or configuration files
+
+---
+
+## [Lab 1 – Python Scripting Basics](labs/lab01/lab1.md)
+
+Lab 1 focuses on using Python for operational and system-level tasks, emphasizing safe inspection and understanding over complex automation.
+
+Topics include:
+
+* Reading system state (uptime, CPU, memory)
+* Basic network reachability checks
+* Auditing local Linux user accounts (read-only)
+
+The intent is to learn how scripting supports DevOps workflows without treating scripts as black boxes.
+
+---
+
+## [Lab 2 – Ansible and Jenkins Automation](labs/lab02/lab2.md)
+
+Lab 2 introduces configuration management and CI tooling using Ansible to provision Jenkins on a headless Linux server.
+
+Topics include:
+
+* Infrastructure as Code concepts
+* Package management and service control with Ansible
+* Secure repository and GPG key handling
+* Jenkins installation, initial configuration, and plugin review
+
+This lab highlights the difference between provisioning tools (Ansible) and continuous automation platforms (Jenkins).
+
+---
+
+## Supporting Scripts
+
+Reusable or general-purpose scripts may appear outside individual lab folders, such as:
+
+* Environment validation helpers
+* Utility scripts reused across labs
+
+These are kept separate from lab-specific artifacts to avoid duplication.
+
+---
 
 ## Prerequisites
 
-* Linux system (tested on Ubuntu Server)
+* Linux system (tested primarily on Ubuntu Server)
 * Python 3 installed from system packages
-* Internet access (for installing optional dependencies)
+* Internet access (for package installation where required)
 
-Note: These lab scripts primarily rely on Python’s standard library. A virtual environment
-may be used for learning and experimentation but is **not required** for the lab.
+Most scripts rely primarily on Python’s standard library. Third-party dependencies, when used, are documented explicitly.
 
-## Python dependencies
+---
 
-Some scripts use third-party Python packages (not part of the standard library). Those are
-listed in `requirements.txt`.
+## Learning Philosophy
 
-To install the third-party packages:
+This repository reflects a learning-first DevOps approach:
 
-```bash
-pip3 install -r requirements.txt
-```
+* Emphasis on understanding system behavior
+* Preference for safe, non-destructive operations
+* Incremental adoption of tooling and best practices
+* Acceptance that solutions evolve as experience grows
 
-Notes:
+The repository is intentionally structured to support experimentation, revision, and reflection rather than rigid step-following.
 
-* Only third-party packages appear in `requirements.txt`.
-* Standard library modules (such as `os`, `pwd`, or `subprocess`) do not need to be installed.
+## AI Additional Tools
 
-## Setup (optional: virtual environment)
+ChatGPT and Microsoft Copilot were used as supplemental tools for research, documentation review, and scripting assistance, consistent with common professional DevOps and software engineering workflows.
 
-Using a virtual environment is optional and provided here as a best-practice learning option.
+- OpenAI, ChatGPT: https://openai.com/chatgpt
+- Microsoft Copilot: https://learn.microsoft.com/en-us/copilot/
 
-### Linux
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-If you choose not to use a virtual environment, you may install required packages globally
-(e.g., `pip3 install psutil`) as shown in the lab instructions.
-
-## Run the scripts
-
-From the repository directory:
-
-### 1) Environment check
-
-```bash
-python3 envChk.py
-```
-
-Notes:
-
-* Uses `psutil` (if installed)
-* Some metrics (such as temperatures) depend on hardware and permissions
-
-### 2) Network monitor
-
-```bash
-python3 netmon.py
-```
-
-Notes:
-
-* Uses `ping` to test a configured target (for example, `8.8.8.8` for Internet or your gateway IP for LAN)
-* Logs 4 pings each cycle (similar to running `ping -c 4 <host>`)
-* The sleep interval is controlled by a constant inside the script
-
-### 3) Account audit (Linux only)
-
-```bash
-sudo python3 passChk.py
-```
-
-Notes:
-
-* Reads `/etc/passwd` and `/etc/shadow`
-* Requires `sudo` to inspect password state
-* **Does not modify users or passwords** (read-only audit)
-* Intended to highlight weak account characteristics for learning purposes
-
-## Editor notes (not required for the lab)
-
-* Any terminal-based editor (nano, vim) is sufficient
-* VS Code and Remote SSH are optional conveniences
-* All scripts can be run directly from an SSH session
-
-## Learning intent
-
-This repository reflects an experimental, learner-focused approach encouraged by the course:
-
-* Scripts may differ from the original lab examples
-* Improvements are made to better reflect modern Linux systems
-* The emphasis is on understanding *what the code does and why*, not just producing output

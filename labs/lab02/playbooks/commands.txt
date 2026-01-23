@@ -1,0 +1,4 @@
+
+ansible-playbook ci-infrastructure.yml --ask-become-pass
+
+

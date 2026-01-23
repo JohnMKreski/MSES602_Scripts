@@ -1,0 +1,122 @@
+---
+- name: deploy Jenkins
+  hosts: all
+  become: true
+
+  tasks:
+
+    # Install Required Packages (if not already present)(added)
+    - name: Ensure required packages are installed
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - gnupg
+        state: present
+        update_cache: true
+
+    # Show the inventory path
+    - name: show env
+      ansible.builtin.debug:
+        var: ansible_inventory_sources
+
+    # Show the inventory limit variable
+    - name: show ansible_limit
+      ansible.builtin.debug:
+        var: ansible_limit
+
+    # Show the play hosts
+    - name: show ansible hosts
+      ansible.builtin.debug:
+        var: ansible_play_hosts_all
+
+    # Show the environment
+    - name: Show env
+      ansible.builtin.debug:
+        var: ansible_env  
+
+    # - name: Get Jenkins key
+    #   ansible.builtin.get_url:
+    #     url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+    #     dest: /usr/share/keyrings/jenkins-keyring.asc
+    # - name: Download Jenkins signing key (keyring)
+    #   ansible.builtin.get_url:
+    #     url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+    #     dest: /usr/share/keyrings/jenkins-keyring.asc
+    #     mode: '0644'
+    # 
+    - name: Download Jenkins signing key (ASCII)
+      ansible.builtin.get_url:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+        dest: /tmp/jenkins.io.key
+        mode: '0644'
+
+    - name: Convert Jenkins signing key to keyring
+      ansible.builtin.command:
+        cmd: gpg --dearmor -o /usr/share/keyrings/jenkins-keyring.gpg /tmp/jenkins.io.key
+        creates: /usr/share/keyrings/jenkins-keyring.gpg
+
+
+
+    # - name: Add a key from a file on the Ansible server
+    #   ansible.builtin.apt_key:
+          # Loads the whole file into a variable and passes it to apt_key
+          # Not recommended for large key files. Causing Failure
+          # Remedy is: don’t import it into apt-key; just use it as a keyring referenced by signed-by.
+    #     data: "{{ lookup('ansible.builtin.file', '/usr/share/keyrings/jenkins-keyring.asc') }}"
+    #     state: present
+
+    # - name: Add Jenkins apt repository (signed-by keyring)
+    #   ansible.builtin.apt_repository:
+    #     repo: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] http://pkg.jenkins.io/debian-stable binary/"
+    #     filename: jenkins
+    #     state: present
+    #     update_cache: true
+    # 
+    - name: Add Jenkins apt repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian-stable binary/"
+        state: present
+        filename: jenkins
+        update_cache: true
+
+    # Update APT Cache (added)
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+
+
+    # This likely is already installed. but ok to check
+    - name: Install Java
+      ansible.builtin.apt:
+        name: 'openjdk-17-jre'
+        state: present
+        update_cache: true
+
+    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html
+    - name: update the repo and install Jenkins
+      ansible.builtin.apt:
+        name: jenkins
+        update_cache: true
+
+    - name: Start Jenkins
+      ansible.builtin.shell:
+        cmd: systemctl start jenkins
+      register: start_jenkins
+
+    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html
+    - name: Show start
+      ansible.builtin.debug:
+        var: start_jenkins
+
+    - name:  Get Jenkins status
+      ansible.builtin.shell:
+        cmd: systemctl status jenkins
+      register: jenkins_status
+
+
+    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html
+    - name: Show Jenkins status
+      ansible.builtin.debug:
+        var: jenkins_status
+
+

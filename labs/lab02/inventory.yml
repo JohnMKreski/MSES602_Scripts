@@ -1,0 +1,15 @@
+all:
+  hosts:
+    default:
+      ansible_host: 127.0.0.1
+  children:
+    cicd_servers:
+      hosts:
+        jenkins:
+          ansible_host: 127.0.0.1
+        deployment_server1:
+          ansible_host: 127.0.0.1
+    bad_servers:
+      hosts:
+        bad_example_one:
+          ansible-host: 127.0.0.2

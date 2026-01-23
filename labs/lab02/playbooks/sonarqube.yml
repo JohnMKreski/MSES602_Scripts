@@ -1,0 +1,123 @@
+---
+- hosts: all
+  become: yes
+  become_method: sudo
+
+  vars:
+    sonar_version: sonarqube-9.9.0.65466
+    sonar_scanner_version: sonar-scanner-cli-4.8.0.2856-linux
+    sonar_scanner_exe: sonar-scanner-4.8.0.2856-linux
+
+  tasks:
+    - name: Update repositories
+      apt:
+        update_cache: yes
+
+    - name: Install Java
+      package: name='openjdk-8-jre' state=latest
+
+    - name: Install Postgres
+      apt:
+        name: postgresql
+        update_cache: yes
+        state: latest
+
+    - name: Add Sonar user to postgres
+      command: createuser sonar
+      become: true
+      become_user: postgres
+      ignore_errors: yes
+
+    - name: Add sonar user password
+      command: psql -c "ALTER USER sonar WITH ENCRYPTED password 'password';"
+      become: true
+      become_user: postgres
+
+    - name: Create database
+      command: psql -c "CREATE DATABASE sonar OWNER sonar;"
+      become: true
+      become_user: postgres
+      ignore_errors: yes
+
+    - name: Add sonar user and install Sonarqube
+      user:
+        name: sonar
+        shell: /bin/bash
+
+    - name: Get SonarQube
+      get_url: 
+        url="https://binaries.sonarsource.com/Distribution/sonarqube/{{sonar_version}}.zip"
+        dest="/tmp/{{sonar_version}}.zip"
+
+    - name: Unzip sonarqube 
+      ansible.builtin.unarchive:
+        src: /tmp/{{sonar_version}}.zip
+        dest: /tmp
+        remote_src: yes
+
+    - name: Copy the files 
+      ansible.builtin.copy:
+        src: /tmp/{{sonar_version}} 
+        dest: /opt
+        remote_src: yes
+
+    - name: Give ownership to the sonar user
+      command: sudo chown -R sonar:sonar /opt/{{sonar_version}}
+
+    - name: Add properties
+      blockinfile:
+        path: /opt/{{sonar_version}}/sonar.properties
+        block: |
+          sonar.jdbc.username=sonar
+          sonar.jdbc.password=password
+          sonar.jdbc.url=jdbc:postgresql://localhost/sonar
+          sonar.web.host=127.0.0.1
+          sonar.search.javaOpts=-Xms512m  -Xmx512m
+        create: true
+
+    - name: Create service file
+      ansible.builtin.copy:
+        src: sonar
+        dest: /etc/init.d
+        owner: root
+        group: root
+        mode: o=rwx,g=rx,u=rx
+
+#    - name: Give ownership to the sonar user
+#      command: sudo chown -R root:root /etc/init.d/sonar
+
+#    - name: Fix the permissions
+#      command: sudo chmod u=rwx,g=rx,o=rx /etc/init.d/sonar
+
+      # If there are issues starting the service you should check the logs at
+      #  /opt/{{sonar_version}}/logs
+      #  Also check the log an temp fie permissions
+    - name: Enable service and start sonarqube
+      ansible.builtin.service:
+        name: sonar
+        enabled: yes
+        state: started
+
+    - name: get sonar-scanner-cli
+      get_url:
+        url="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/{{sonar_scanner_version}}.zip"
+        dest="/tmp/{{sonar_scanner_version}}.zip"
+
+    - name: unzip sonar-scanner-cli
+      ansible.builtin.unarchive:
+        src: /tmp/{{sonar_scanner_version}}.zip
+        dest: /tmp
+        remote_src: yes 
+    
+    - name: Copy sonar-scanner-cli to /opt
+      ansible.builtin.copy:
+        src: /tmp/{{sonar_scanner_exe}}
+        dest: /opt/sonar-scanner
+        remote_src: yes
+
+    - name: add sonar-scanner to path
+      lineinfile:
+        path: /home/osboxes/.bashrc
+        line: export PATH=$PATH:/opt/sonar-scanner/{{sonar_scanner_exe}}/bin 
+
+
