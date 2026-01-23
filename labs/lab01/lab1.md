@@ -35,14 +35,14 @@ The script was rewritten to:
 
 The script was intentionally designed to be **read-only** and non-destructive. It performs no writes and makes no system changes. When run without sufficient permissions, it exits safely with an explanatory message.
 
-![passChk.py no Sudo Output](/labs/assets/lab1/no-auth_passChk.jpg)
+![passChk.py no Sudo Output](assets/no-auth_passChk.jpg)
 
 
 ### Outcome
 
 Running the script on the server correctly identified the `nobody` account as locked/disabled, which is expected behavior on Ubuntu systems. No weak user-created accounts were detected.
 
-![passChk.py Output](/labs/assets/lab1/auth_passChk_systemoff.jpg)
+![passChk.py Output](assets/auth_passChk_systemoff.jpg)
 
 
 ---
@@ -67,7 +67,7 @@ To prevent leaking local network details, environment-specific values were exter
 
 The script reliably reports whether network connectivity is available and can be adapted to different environments without modifying source code.
 
-![netmon.py Output](/labs/assets/lab1/netmon.jpg)
+![netmon.py Output](assets/netmon.jpg)
 
 ---
 
@@ -97,7 +97,7 @@ Output formatting was improved to favor readability while preserving access to r
 * The script remains safe and non-invasive
 * Raw JSON output is available but optional
 
-![passChk.py Output](/labs/assets/lab1/envChk.jpg)
+![passChk.py Output](assets/envChk.jpg)
 
 ---
 

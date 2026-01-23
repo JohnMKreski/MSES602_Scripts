@@ -32,6 +32,8 @@ Ansible was used to:
 
 During this process, additional troubleshooting was required to resolve repository signature verification errors. This highlighted the importance of correctly managing GPG keys and aligning repository definitions with the expected signing keys.
 
+![playbook check](assets/playbook_check.jpg)
+
 ### Service Verification
 
 After installation, Jenkins was verified by:
@@ -42,17 +44,25 @@ After installation, Jenkins was verified by:
 
 These checks ensured Jenkins was properly installed and running as a managed system service.
 
+![curl check](assets/curl_check.jpg)
+
 ---
 
 ## Initial Jenkins Configuration
 
-Upon first access to the Jenkins web interface, the initial setup wizard was completed. This included:
+Upon first access to the Jenkins web interface, the initial setup wizard was completed. 
+
+![jenkins ui](assets/jenkins_ui.jpg)
+
+This included:
 
 * Unlocking Jenkins using the generated admin password
 * Installing the default (suggested) plugins
 * Completing the initial administrator setup
 
 Once setup was complete, the Jenkins dashboard and management options became available for further inspection.
+
+![jenkind service active](assets/jenkins_service_active.jpg)
 
 ---
 
@@ -65,6 +75,8 @@ The default plugin set installed by Jenkins provides a broad baseline of functio
 * Many installed plugins act as internal libraries or dependencies rather than direct user-facing features
 
 Overall, the default plugin selection is sufficient for a basic self-hosted CI environment without requiring immediate customization.
+
+![plugin check](assets/jenkins_plugins_cropped.jpg)
 
 ---
 
